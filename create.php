@@ -17,16 +17,17 @@
 
     <h1 class="text-center">Додати категорію</h1>
 
-    <form class="col-md-6 offset-md-3" id="categoryForm">
+    <form class="col-md-6 offset-md-3" id="categoryForm" onsubmit="return validateForm()">
         <div class="mb-3">
             <label for="name" class="form-label">Назва</label>
             <input type="text" class="form-control" name="name" id="name">
+            <span id="nameError" class="text-danger"></span>
         </div>
 
         <div class="row">
             <div class="col-md-4">
-                <img src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg"
-                     alt="Обране фото" width="100%" id="selectedImage">
+                <img src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="Обране фото" width="100%" id="selectedImage" onclick="changeImage()">
+                <span id="imageError" class="text-danger"></span>
             </div>
             <div class="col-md-8">
                 <div class="mb-3">
@@ -44,17 +45,52 @@
     function displaySelectedImage() {
         var input = document.getElementById('image');
         var selectedImage = document.getElementById('selectedImage');
+        var imageError = document.getElementById('imageError');
 
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
                 selectedImage.src = e.target.result;
+                imageError.textContent = ''; // Clear the error message when an image is selected.
             };
 
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    function changeImage() {
+        var selectedImage = document.getElementById('selectedImage');
+        var newImagePath = prompt('Enter the new image URL:');
+
+        if (newImagePath) {
+            selectedImage.src = newImagePath;
+        }
+    }
+
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var image = document.getElementById('image').value;
+        var nameError = document.getElementById('nameError');
+        var imageError = document.getElementById('imageError');
+
+        // Reset error messages
+        nameError.textContent = '';
+        imageError.textContent = '';
+
+        if (name.trim() === "") {
+            nameError.textContent = "Ви не ввели назву.";
+            return false;
+        }
+
+        if (image.trim() === "") {
+            imageError.textContent = "Ви не вибрали фото.";
+            return false;
+        }
+
+        return true;
+    }
 </script>
 </body>
 </html>
+
