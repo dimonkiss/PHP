@@ -19,7 +19,7 @@
 
     <form class="col-md-6 offset-md-3">
         <div class="mb-3">
-            <label for="name" class="form-label">Назв</label>
+            <label for="name" class="form-label">Назва</label>
             <input type="text" class="form-control" name="name" id="name" >
         </div>
 
