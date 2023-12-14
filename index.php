@@ -56,7 +56,7 @@
             <tr>
                 <th scope="row"><?php echo $row["id"]; ?></th>
                 <td>
-                    <img src="<?php echo $row["image"]; ?>"
+                    <img src="/images/<?php echo $row["image"]; ?>"
                          height="75"
                          alt="Фото">
                 </td>
@@ -64,7 +64,8 @@
                     <?php echo $row["name"]; ?>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-info">Переглянути</a>
+                    <a href="#" class="btn btn-info" data-delete="<?php echo $row["id"]; ?>">Видалить</a>
+                    <a href="/edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-dark">Змінить</a>
                 </td>
             </tr>
         <?php } ?>
@@ -72,7 +73,60 @@
     </table>
 </div>
 
+<!-- Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="modalDelete">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ви дійсно впевнені?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ви бажаєте видалить запис</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувать</button>
+                <button type="button" class="btn btn-danger" id="btnDeleteConfirm">Видалить</button>
+                <!-- Additional buttons if needed -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/axios.min.js"></script>
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('modalDelete'));
+    let id = 0;
+
+    const list = document.querySelectorAll('[data-delete]');
+    const elementsArray = Array.from(list);
+
+    elementsArray.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            id = e.target.dataset.delete;
+            myModal.show();
+        });
+    });
+
+    document.getElementById("btnDeleteConfirm").addEventListener("click", () => {
+        // Send AJAX request to delete the category
+        axios.post("/delete_category.php", { id: id })
+            .then(response => {
+                console.log("Deleted successfully");
+                // Hide the modal
+                myModal.hide();
+                // Hide the deleted category row
+                var item = document.querySelector('[data-delete="'+id+'"]');
+                item.closest("tr").style.display = "none";
+            })
+            .catch(error => {
+                console.error("Error deleting category", error);
+            });
+    });
+</script>
+
 </body>
 </html>
